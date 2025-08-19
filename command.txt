@@ -3,7 +3,7 @@ locust -f locustfile_new.py --headless -u 40 -r 1 -t 5m --print-stats --html "Te
 
 # LocustSelenium.py:
 ##Render
-locust -f LocustSelenium.py --headless -u 60 -r 1 -t 5m --print-stats --html "TestResults/renderFree_locustSelenium_{u}_{r}_{t}.html"
+locust -f LocustSelenium.py --headless -u 40 -r 1 -t 10m --print-stats --html "TestResults/renderStarter_locustSelenium_{u}_{r}_{t}.html"
 
 ##Heroku
 locust -f LocustSelenium.py --headless -u 60 -r 1 -t 5m --print-stats --html "TestResults/herokuStandard_locustSelenium_{u}_{r}_{t}.html"

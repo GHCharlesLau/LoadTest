@@ -35,7 +35,7 @@ def record_custom_task(name, success=True, response_time=0):
 
 class MyUser(HttpUser):
     wait_time = constant(2)
-    host = "https://conversation-experiment.onrender.com/join/bazugujo"  # Render server
+    host = "https://conversation-experiment.onrender.com/join/pekihija"  # Render server
     # host = "https://letschat-43e737e6bc6c.herokuapp.com/join/mehopegu"  # Heroku server
 
     def start_driver(self):
@@ -87,16 +87,18 @@ class MyUser(HttpUser):
 
         def next_page(page_name="NextPage"):
             start = time.time()
-            success = True
             try:
-                # next_button = driver.find_element(By.TAG_NAME, 'button')
-                next_button = wait.until(EC.presence_of_element_located((By.TAG_NAME, 'button')))
+                next_button = wait.until(
+                    EC.element_to_be_clickable((By.TAG_NAME, 'button'))
+                )
                 next_button.click()
+                success = True
             except Exception as e:
                 success = False
-                logging.error(f"Error occurred: {e}")
+                logging.exception(f"[{page_name}] Failed to click next page button")  # 打印堆栈更有用
             finally:
-                record_custom_task(page_name, success, int((time.time() - start) * 1000))
+                elapsed_ms = int((time.time() - start) * 1000)
+                record_custom_task(page_name, success, elapsed_ms)
 
         # Consent page
         start = time.time()
