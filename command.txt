@@ -1,5 +1,5 @@
 # locustfile_new.py:
-locust -f locustfile_new.py --headless -u 40 -r 1 -t 5m --print-stats --html "TestResults/renderStandard_locustNew_{u}_{r}_{t}.html"
+locust -f locustfile_new.py --headless -u 40 -r 1 -t 10m --print-stats --html "TestResults/renderFree_locustNew_{u}_{r}_{t}.html"
 
 # LocustSelenium.py:
 ##Render

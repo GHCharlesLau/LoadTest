@@ -36,7 +36,7 @@ class UserTask(TaskSet):
 
     def on_start(self):
         session = self.user.session  # Inherit attributes of HttpUser Class
-        with self.client.get(session, catch_response=True, name="ConsentPageEnter") as resp:
+        with self.client.get(session, catch_response=True, name="ConsentPage") as resp:
         # print(resp.status_code)
             resp_url = resp.url  # get the URL of the response
             match = re.search(r'/p/([^/]+)', resp_url)
@@ -57,7 +57,7 @@ class UserTask(TaskSet):
         data = {
             "agreement": "True",
         }
-        next_url = self.next_page("/p/" + p_id + "/introduction/ConsentPage/1", data=data, name="ConsentPageSubmit") 
+        next_url = self.next_page("/p/" + p_id + "/introduction/ConsentPage/1", data=data, name="WelcomePage") 
         # self.client.get("/p/" + p_id + "/introduction/WelcomePage/2", name="WelcomePage")
         time.sleep(random.randint(5, 10))
 
@@ -67,7 +67,7 @@ class UserTask(TaskSet):
             "avatar": "avatar/fox.png", # fox as avatar
             "nickname": "test_bot",
         }
-        next_url = self.next_page(next_url, data=data, name="WelcomePageSubmit")
+        next_url = self.next_page(next_url, data=data, name="TaskPrimingPage")
         time.sleep(random.randint(10, 20))
         
 
@@ -75,15 +75,15 @@ class UserTask(TaskSet):
         data = {
             "primingText": "This is a test priming text." * 3,
         }
-        next_url = self.next_page(next_url, data=data, name="Task1PrimingSubmit")
+        next_url = self.next_page(next_url, data=data, name="Task1Instruction")
         time.sleep(5)
 
         # Enter waiting page 1
-        next_url = self.next_page(next_url, name="Task1ChatInstructSubmit")
+        next_url = self.next_page(next_url, name="WaitingPage1")
         time.sleep(15)  # Waiting for the pairing and capture the url of pairing success page
-        next_url = self.next_page(next_url, name="WaitingPage1Submit")
+        next_url = self.next_page(next_url, name="PairingSuccess1")
         # pairing success （Don't need to wait for the pairing when using http requets)
-        chat_url = self.next_page(next_url, name="Chat1PairingSuccess")
+        chat_url = self.next_page(next_url, name="ChatPage1")
         logging.info(f"Chat1 url: {chat_url}")
 
         # Chat in task1
@@ -92,15 +92,15 @@ class UserTask(TaskSet):
 
 
         # Enter task2 instruction
-        next_url = self.next_page(chat_url, name="ChatPage1Submit")
+        next_url = self.next_page(chat_url, name="Task2Instruction")
         time.sleep(5)
 
         # Enter waiting page 2
-        next_url = self.next_page(next_url, name="Task2ChatInstructSubmit")
+        next_url = self.next_page(next_url, name="WaitingPage2")
         time.sleep(15)  # Waiting for the pairing and capture the url of pairing success page
-        next_url = self.next_page(next_url, name="WaitingPage2Submit")
+        next_url = self.next_page(next_url, name="PairingSuccess2")
         # pairing success
-        chat_url = self.next_page(next_url, name="Chat2PairingSuccess")
+        chat_url = self.next_page(next_url, name="ChatPage2")
         logging.info(f"Chat2 url: {chat_url}")
 
         # Chat in task2
@@ -108,12 +108,12 @@ class UserTask(TaskSet):
         time.sleep(5)
 
         # Enter survey prompt
-        next_url = self.next_page(chat_url, name="ChatPage2Submit")
+        next_url = self.next_page(chat_url, name="SurveyPrompt")
         time.sleep(random.randint(3, 5))
 
         # Enter survey pages
         logging.info(f"Survey prompt page: {next_url}")
-        next_url = self.next_page(next_url, name="SurveyPromptSubmit")
+        next_url = self.next_page(next_url, name="SurveyPage1")
         logging.info(f"Survey page 1: {next_url}")
         # Survey page 1
         data = {
@@ -133,7 +133,7 @@ class UserTask(TaskSet):
             "CE_4": self.str_random_choice(),
         }
         time.sleep(random.randint(20, 30))
-        next_url = self.next_page(next_url, data=data, name="SurveyPage1Submit")
+        next_url = self.next_page(next_url, data=data, name="SurveyPage2")
 
         # Survey page 2
         data = {
@@ -147,7 +147,7 @@ class UserTask(TaskSet):
             "partner_label": "I don't know",
         }
         time.sleep(random.randint(15, 25))
-        next_url = self.next_page(next_url, data=data, name="SurveyPage2Submit")
+        next_url = self.next_page(next_url, data=data, name="SurveyPage3-Demographics")
         
         # Survey page 3: Demographics
         data = {
@@ -162,7 +162,7 @@ class UserTask(TaskSet):
             "rlg_4": self.str_random_choice(),
         }
         time.sleep(random.randint(20, 30))
-        next_url = self.next_page(next_url, data=data, name="SurveyPage3Submit")
+        next_url = self.next_page(next_url, data=data, name="PaymentInfo")
 
         # End: Payment Information
         time.sleep(5)
@@ -171,7 +171,7 @@ class UserTask(TaskSet):
 
 class SimulatedUser(HttpUser):
     host = "https://conversation-experiment.onrender.com"
-    session = "/join/bazugujo"
+    session = "/join/pekihija"
     wait_time = constant(1)  # or between(1, 5): wait 1-5 seconds after each task
     # wait_time = constant_throughput(1) # 1 task (not request) per second
     tasks = [UserTask]
